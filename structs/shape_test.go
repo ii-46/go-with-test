@@ -19,15 +19,19 @@ func TestArea(t *testing.T) {
 			t.Errorf("got %.2f want %.2f", got, want)
 		}
 	}
-	t.Run("rectangles", func(t *testing.T) {
-		rectangle := Rectangle{12.0, 60.0}
-		want := 72.0
-		checkArea(t, rectangle, want)
-	})
+	areaTests := []struct {
+		name  string
+		shape Shape
+		want  float64
+	}{
+		{"rectangle", Rectangle{12.0, 60.0}, 72.0},
+		{"circle", Circle{10}, 314.1592653589793},
+		{"triangle", Triangle{12, 6}, 36.0},
+	}
 
-	t.Run("circle", func(t *testing.T) {
-		circle := Circle{10}
-		want := 314.1592653589793
-		checkArea(t, circle, want)
-	})
+	for _, s := range areaTests {
+		t.Run(s.name, func(t *testing.T) {
+			checkArea(t, s.shape, s.want)
+		})
+	}
 }
