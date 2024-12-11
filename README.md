@@ -1,6 +1,8 @@
 # LEARN GO WITH TEST
-
-## CURRENT PAGE: 124 
+run benchmark
+```sh
+go test <package_name> -bench="." -v
+```
 
 ## READING list:
 - https://en.wikipedia.org/wiki/Parametric_polymorphism
