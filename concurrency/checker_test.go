@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"testing"
 	"time"
@@ -45,11 +47,22 @@ func BenchmarkCheckWebsites(b *testing.B) {
 }
 
 func TestRacer(t *testing.T) {
-	slowURL := "http://www.facebook.com"
-	fastURL := "http://www.quii.dev"
+	slowServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(20 * time.Millisecond)
+		w.WriteHeader(http.StatusOK)
+	}))
+	fastServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+
+	slowURL := slowServer.URL
+	fastURL := fastServer.URL
 	want := fastURL
 	got := Racer(slowURL, fastURL)
 	if got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
+
+	slowServer.Close()
+	fastServer.Close()
 }
